@@ -18,7 +18,8 @@ as we can.
 **Client**
 
 The way the client side will be structures is as follows
-		_______________________
+
+```		_______________________
 	   |					   |
 	   |					   |
 	   |					   |
@@ -41,7 +42,7 @@ The way the client side will be structures is as follows
 	   |					   |
 	   |					   |
 	   |_______________________|
-
+```
 
 The "command file" will be placed in the 
 text area and then the user will press Convert.
