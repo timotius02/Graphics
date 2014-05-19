@@ -1,4 +1,4 @@
-# Online Command File to Animation Conversion
+## Online Command File to Animation Converter
 
 ### A Computer Graphics Final Project
 ### By Timotius Sitorus & Kevin Sun
