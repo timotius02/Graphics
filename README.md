@@ -7,7 +7,7 @@
 
 Our project's goal is to migrate the command list program that 
 we have created into the web through the use of *Javascript*
-and HTML5 *Canvas*
+and *HTML5 Canvas*
 
 In order to maintain the integrity of this project, we will use vanilla
 javascript without the use of any external frameworks or packages. We will
@@ -75,7 +75,7 @@ rotate-z rz
 save storage-name 
 restore storage-name 
 
-render-parallel 
+render-parallel s
 render-perspective-cyclops eyex eyey eyez 
 render-perspective-stereo left-eyex left-eyey left-eyez right-eyex 
 						right-eyey right-eyez 
@@ -93,6 +93,7 @@ circle centerx centery centerz radius
 ```
 
 **Future Additions**
+
 If we finish everything and we have time, we might add some extra features such as:
 
 + Rotating the animation based on slider or mouse location
