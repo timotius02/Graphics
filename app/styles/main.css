@@ -4,6 +4,7 @@ body {
     color: #333;
 }
 #myCanvas{
+    
     display: block;
     margin:auto;
     margin-top: 5%;
