@@ -803,21 +803,21 @@ button.addEventListener('click', grabText, false);
 //socketio
 // create the socket object
 
-function redrawTriangles(){//assume render parallel
+function drawCopy(){//assume render parallel
     canvas.width = canvas.width;
     var eye = [0, 0, 0];
     //triangles = theCulling(triangles, 'p', eye);
 
 
-    for(var i = 0; i < triangles[0].length;i+=3){
-        var x1 = convertScreen(triangles[0][i], 'x');
-        var y1 = -convertScreen(triangles[1][i], 'y');
+    for(var i = 0; i < copy[0].length;i+=3){
+        var x1 = convertScreen(copy[0][i], 'x');
+        var y1 = -convertScreen(copy[1][i], 'y');
 
-        var x2 = convertScreen(triangles[0][i+1], 'x');
-        var y2 = -convertScreen(triangles[1][i+1], 'y');
+        var x2 = convertScreen(copy[0][i+1], 'x');
+        var y2 = -convertScreen(copy[1][i+1], 'y');
 
-        var x3 = convertScreen(triangles[0][i+2], 'x');
-        var y3 = -convertScreen(triangles[1][i+2], 'y');
+        var x3 = convertScreen(copy[0][i+2], 'x');
+        var y3 = -convertScreen(copy[1][i+2], 'y');
 
 
         context.beginPath();
@@ -837,12 +837,14 @@ function move(data) {
     var angle = data.xRotate;
     var xRotate = createIdentity();
 
+    var copy = triangles;
+
     xRotate[1][1] = Math.cos(angle* Math.PI/180);
     xRotate[1][2] = -Math.sin(angle* Math.PI/180);
     xRotate[2][1] = Math.sin(angle* Math.PI/180);
     xRotate[2][2] = Math.cos(angle* Math.PI/180);
 
-    triangles = matrixMult(xRotate, triangles);
+    copy = matrixMult(xRotate, copy);
 
     angle = data.yRotate;
     var yRotate = createIdentity();
@@ -852,7 +854,7 @@ function move(data) {
     yRotate[2][0] = -Math.sin(angle* Math.PI/180);
     yRotate[2][2] = Math.cos(angle* Math.PI/180);
 
-    triangles = matrixMult(yRotate, triangles);
+    copy = matrixMult(yRotate, copy);
 
     angle = data.zRotate;
     var zRotate = createIdentity();
@@ -862,9 +864,9 @@ function move(data) {
     zRotate[1][0] = Math.sin(angle* Math.PI/180);
     zRotate[1][1] = Math.cos(angle* Math.PI/180);
 
-    triangles = matrixMult(zRotate, triangles);
+    copy = matrixMult(zRotate, copy);
 
-    redrawTriangles();
+    drawCopy();
 }
 
 socket.on('connect', function () {
