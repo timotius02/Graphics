@@ -805,7 +805,6 @@ button.addEventListener('click', grabText, false);
  var socket = io();
 
 function move(data) {
-    console.log(data);
     var angle = data.xRotate;
     var xRotate = createIdentity();
 
@@ -815,7 +814,7 @@ function move(data) {
     xRotate[2][2] = Math.cos(angle* Math.PI/180);
     console.log(xRotate);
 
-    transformation = matrixMult(transformation, xRotate);
+    triangles = matrixMult(triangles, xRotate);
 
     angle = data.yRotate;
     var yRotate = createIdentity();
@@ -825,7 +824,7 @@ function move(data) {
     yRotate[2][0] = -Math.sin(angle* Math.PI/180);
     yRotate[2][2] = Math.cos(angle* Math.PI/180);
 
-    transformation = matrixMult(transformation, yRotate);
+    triangles = matrixMult(triangles, yRotate);
 
     angle = data.zRotate;
     var zRotate = createIdentity();
@@ -835,7 +834,7 @@ function move(data) {
     zRotate[1][0] = Math.sin(angle* Math.PI/180);
     zRotate[1][1] = Math.cos(angle* Math.PI/180);
 
-    transformation = matrixMult(transformation, zRotate);
+    triangles = matrixMult(triangles, zRotate);
 
   
 }
