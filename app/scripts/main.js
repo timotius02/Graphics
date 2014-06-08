@@ -804,6 +804,7 @@ button.addEventListener('click', grabText, false);
 // create the socket object
 
 function redrawTriangles(){//assume render parallel
+    canvas.width = canvas.width;
     var eye = [0, 0, 0];
     triangles = theCulling(triangles, 'p', eye);
 
