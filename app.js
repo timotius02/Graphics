@@ -9,12 +9,11 @@ io.on('connection', function (socket) {
   // listen for device move
   console.log('new user connected');
   socket.on('devicemove', function (data) {
-  	console.log(data);
     socket.broadcast.emit('move', data);
   });
 });
 
-server.listen(3000, function(){
+server.listen(process.env.PORT || 5000, function(){
 	console.log('listening on : 3000')
 });
 
