@@ -785,12 +785,12 @@ function grabText(){
 
 
 
-        // if(curFrame > numFrames){
-        //     //clearInterval(id);
-        //         variables = [];
-        //         curFrame = 1;
-        //         numFrames = 1;           
-        // }
+        if(curFrame > numFrames){
+            clearInterval(id);
+                // variables = [];
+                // curFrame = 1;
+                // numFrames = 1;           
+        }
             
     }, 20);
 
