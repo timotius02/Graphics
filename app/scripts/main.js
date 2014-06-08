@@ -813,6 +813,7 @@ function move(data) {
     xRotate[1][2] = -Math.sin(angle* Math.PI/180);
     xRotate[2][1] = Math.sin(angle* Math.PI/180);
     xRotate[2][2] = Math.cos(angle* Math.PI/180);
+    console.log(xRotate);
 
     transformation = matrixMult(transformation, xRotate);
 
