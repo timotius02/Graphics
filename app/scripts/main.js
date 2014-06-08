@@ -803,7 +803,7 @@ button.addEventListener('click', grabText, false);
 //socketio
 // create the socket object
 
-function drawCopy(){//assume render parallel
+function drawCopy(copy){//assume render parallel
     canvas.width = canvas.width;
     var eye = [0, 0, 0];
     //triangles = theCulling(triangles, 'p', eye);
@@ -866,7 +866,7 @@ function move(data) {
 
     copy = matrixMult(zRotate, copy);
 
-    drawCopy();
+    drawCopy(copy);
 }
 
 socket.on('connect', function () {
