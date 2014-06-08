@@ -814,7 +814,7 @@ function move(data) {
     xRotate[2][2] = Math.cos(angle* Math.PI/180);
     console.log(xRotate);
 
-    triangles = matrixMult(triangles, xRotate);
+    triangles = matrixMult(xRotate, triangles);
 
     angle = data.yRotate;
     var yRotate = createIdentity();
@@ -824,7 +824,7 @@ function move(data) {
     yRotate[2][0] = -Math.sin(angle* Math.PI/180);
     yRotate[2][2] = Math.cos(angle* Math.PI/180);
 
-    triangles = matrixMult(triangles, yRotate);
+    triangles = matrixMult(yRotate, triangles);
 
     angle = data.zRotate;
     var zRotate = createIdentity();
@@ -834,7 +834,7 @@ function move(data) {
     zRotate[1][0] = Math.sin(angle* Math.PI/180);
     zRotate[1][1] = Math.cos(angle* Math.PI/180);
 
-    triangles = matrixMult(triangles, zRotate);
+    triangles = matrixMult(zRotate, triangles);
 
   
 }
