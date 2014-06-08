@@ -805,6 +805,7 @@ button.addEventListener('click', grabText, false);
  var socket = io();
 
 function move(data) {
+    console.log(data);
     var angle = data.xRotate;
     var xRotate = createIdentity();
 
