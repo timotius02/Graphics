@@ -619,7 +619,7 @@ function interpret(string){
 
         case 'render-parallel':
             var eye = [0, 0, 0];
-            triangles = theCulling(triangles, 'p', eye);
+            //triangles = theCulling(triangles, 'p', eye);
 
 
             for(var i = 0; i < triangles[0].length;i+=3){
@@ -806,7 +806,7 @@ button.addEventListener('click', grabText, false);
 function redrawTriangles(){//assume render parallel
     canvas.width = canvas.width;
     var eye = [0, 0, 0];
-    triangles = theCulling(triangles, 'p', eye);
+    //triangles = theCulling(triangles, 'p', eye);
 
 
     for(var i = 0; i < triangles[0].length;i+=3){
