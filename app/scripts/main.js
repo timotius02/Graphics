@@ -802,6 +802,34 @@ button.addEventListener('click', grabText, false);
 
 //socketio
 // create the socket object
+
+function redrawTriangles(){//assume render parallel
+    var eye = [0, 0, 0];
+    triangles = theCulling(triangles, 'p', eye);
+
+
+    for(var i = 0; i < triangles[0].length;i+=3){
+        var x1 = convertScreen(triangles[0][i], 'x');
+        var y1 = -convertScreen(triangles[1][i], 'y');
+
+        var x2 = convertScreen(triangles[0][i+1], 'x');
+        var y2 = -convertScreen(triangles[1][i+1], 'y');
+
+        var x3 = convertScreen(triangles[0][i+2], 'x');
+        var y3 = -convertScreen(triangles[1][i+2], 'y');
+
+
+        context.beginPath();
+        context.moveTo(x1, y1);
+        context.lineTo(x2, y2);
+        context.lineTo(x3, y3);
+        context.lineTo(x1, y1);
+
+        context.strokeStyle = '#000000';
+        context.stroke();     
+    }
+}
+
  var socket = io();
 
 function move(data) {
@@ -812,7 +840,6 @@ function move(data) {
     xRotate[1][2] = -Math.sin(angle* Math.PI/180);
     xRotate[2][1] = Math.sin(angle* Math.PI/180);
     xRotate[2][2] = Math.cos(angle* Math.PI/180);
-    console.log(xRotate);
 
     triangles = matrixMult(xRotate, triangles);
 
@@ -836,7 +863,7 @@ function move(data) {
 
     triangles = matrixMult(zRotate, triangles);
 
-  
+    redrawTriangles();
 }
 
 socket.on('connect', function () {
