@@ -50,7 +50,7 @@ function interpret(string){
         break;
 
         case '#':
-        console.log(stringCopy.substring(1));
+
         break;
 
         case 'frames':
@@ -590,7 +590,6 @@ function drawCopy(copy){//assume render parallel
 var socket = io();
 
 function move(data) {
-    console.log(data);
     var angle = data.xRotate;
     var xRotate = createIdentity();
 
