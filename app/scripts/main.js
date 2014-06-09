@@ -6,7 +6,6 @@ var button = document.getElementById('myButton');
 var context = canvas.getContext('2d');
 
 var triangles = [[],[],[],[]];
-var edge = [[],[],[],[]];
 var transformation = createIdentity();
 
 var numFrames = 1;
@@ -18,8 +17,9 @@ var variables = [];
 
 var red = 0, green = 0, blue = 0;
 
-var saves = {};
-var saveNames= [];
+var saves = [];
+
+var continuous = false;
 
 function convertScreen(num, c){
     var result;
@@ -85,13 +85,11 @@ function interpret(string){
                 currVal: parseFloat(split[2]),
                 increment: inc,
                 startFrame: parseInt(split[4]),
-                endFrame: parseInt(split[5])
+                endFrame: parseInt(split[5]),
+                update: function(){
+                    this.currVal += this.increment;
+                }
             };
-
-            vary.update = function(){
-                this.currVal += this.increment;
-            }
-
 
             variables.push(vary);
         }
@@ -104,12 +102,26 @@ function interpret(string){
         break;
 
         case 'save':
-        saves[split[1]] = transformation;
-        saveNames.push(split[i]);
+
+        var save = {
+            name: split[1],
+            matrix: transformation
+        }
+        saves.push(save);
         break;
 
         case 'restore':
-        transformation = saves[split[1]];
+        var save;
+
+        for(var i = 0; i < saves.length;i++){
+            if(saves[i].name === split[1]){
+                save = saves[i].matrix;
+            }
+            else if(i === saves.length-1)
+                throw 'error: save '+ split[i] +' not found';
+        }
+
+        transformation = save;
         break;
 
         case 'import': //does not do anything yet
@@ -513,13 +525,14 @@ function interpret(string){
         break;
 
         default:
-        console.log('Keyword '+split[0]+' not found.');
+        // console.log('Keyword '+split[0]+' not found.');
     }
 }
 
 function updateVariables(){
     for(var i = 0; i < variables.length;i++){
-        variables[i].update();
+        if(curFrame >= variables[i].startFrame && curFrame <= variables[i].endFrame)
+            variables[i].update();
     }
 }
 
@@ -543,6 +556,8 @@ function grabText(){
         clearInterval(id);
     }
 
+    continuous = document.getElementById('continuous').checked;
+
     variables = [];
     curFrame = 1;
     numFrames = 1;
@@ -550,10 +565,9 @@ function grabText(){
     id = setInterval(function(){
         canvas.width = canvas.width;
         triangles = [[],[],[],[]];
-        edge = [[],[],[],[]];
         transformation = createIdentity();
 
-        saves = {};
+        saves = [];
 
         red = 0;
         green = 0;
@@ -565,10 +579,14 @@ function grabText(){
         updateVariables();
 
         if(curFrame > numFrames){
-            clearInterval(id);
-            // variables = [];
-            // curFrame = 1;
-            // numFrames = 1;           
+
+            if(continuous){
+                variables = [];
+                curFrame = 1;
+                numFrames = 1; 
+            }          
+            else
+                clearInterval(id);
         }
         
     }, 20);
