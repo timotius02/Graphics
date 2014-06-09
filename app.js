@@ -8,8 +8,12 @@ app.use("/", express.static(__dirname + '/app'));
 io.on('connection', function (socket) {
   // listen for device move
   console.log('new user connected');
-  socket.on('devicemove', function (data) {
-    socket.broadcast.emit('move', data);
+  socket.on('devicerotate', function (data) {
+    socket.broadcast.emit('rotate', data);
+  });
+
+  socket.on('devicemove', function(data){
+  	socket.broadcast.emit('move', data);
   });
 });
 

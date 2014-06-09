@@ -607,7 +607,19 @@ function drawCopy(copy){//assume render parallel
 
 var socket = io();
 
-function move(data) {
+function move(data){
+    var copy = triangles;
+
+    var move = createIdentity();
+    move[0][3] = data.x;
+    move[1][3] = data.y;
+    move[2][3] = data.z;
+    copy = matrixMult(move, copy);
+
+    drawCopy(copy);
+}
+
+function rotate(data) {
     var angle = data.xRotate;
     var xRotate = createIdentity();
 
@@ -645,9 +657,13 @@ function move(data) {
 
 socket.on('connect', function () {
 
-  socket.on('move', function(data) {
-    move(data);
+  socket.on('rotate', function(data) {
+    rotate(data);
 });
+
+  socket.on('move', function(data){
+    move(data);
+  });
 
   socket.on('disconnect',function() {
   });
@@ -656,25 +672,33 @@ socket.on('connect', function () {
 var is_client = document.getElementById('is_client');
 
 
-function handleOrientationEvent(alpha,beta,gamma) {
-    var data = {
-        zRotate: gamma,
-        xRotate: beta,
-        yRotate: alpha,
+function orientationHandler(data) {
+    var dataSet = {
+        zRotate: data.gamma,
+        xRotate: data.beta,
+        yRotate: data.alpha,
     };
     if(is_client.checked) {
-        socket.emit('devicemove', data);
-        move(data);
+        socket.emit('devicerotate', dataSet);
+        rotate(dataSet);
+    }
+}
+
+function motionHandler(data){
+    var acceleration = data.acceleration;
+
+
+    if(is_client.checked){
+        socket.emit('devicemove', acceleration);
+        move(acceleration);
+
     }
 }
 
 
 if(window.DeviceOrientationEvent) {
-    window.addEventListener("deviceorientation", function(event) {
-        var alpha = event.alpha;
-        var beta = event.beta;
-        var gamma = event.gamma;
-        
-        handleOrientationEvent(alpha, beta, gamma);
-    }, false);
+    window.addEventListener('deviceorientation', orientationHandler, false);
+}
+if(window.DeviceMotionEvent){
+    window.addEventListener('devicemotion', motionHandler, false);
 }
