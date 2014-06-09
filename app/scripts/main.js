@@ -607,17 +607,17 @@ function drawCopy(copy){//assume render parallel
 
 var socket = io();
 
-function move(data){
-    var copy = triangles;
+// function move(data){
+//     var copy = triangles;
 
-    var move = createIdentity();
-    move[0][3] = data.x;
-    move[1][3] = data.y;
-    move[2][3] = data.z;
-    copy = matrixMult(move, copy);
+//     var move = createIdentity();
+//     move[0][3] = data.x;
+//     move[1][3] = data.y;
+//     move[2][3] = data.z;
+//     copy = matrixMult(move, copy);
 
-    drawCopy(copy);
-}
+//     drawCopy(copy);
+// }
 
 function rotate(data) {
     var angle = data.xRotate;
@@ -661,9 +661,9 @@ socket.on('connect', function () {
     rotate(data);
 });
 
-  socket.on('move', function(data){
-    move(data);
-  });
+  // socket.on('move', function(data){
+  //   move(data);
+  // });
 
   socket.on('disconnect',function() {
   });
@@ -684,21 +684,21 @@ function orientationHandler(data) {
     }
 }
 
-function motionHandler(data){
-    var acceleration = data.acceleration;
+// function motionHandler(data){
+//     var acceleration = data.acceleration;
 
 
-    if(is_client.checked){
-        socket.emit('devicemove', acceleration);
-        move(acceleration);
+//     if(is_client.checked){
+//         socket.emit('devicemove', acceleration);
+//         move(acceleration);
 
-    }
-}
+//     }
+// }
 
 
 if(window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', orientationHandler, false);
 }
-if(window.DeviceMotionEvent){
-    window.addEventListener('devicemotion', motionHandler, false);
-}
+// if(window.DeviceMotionEvent){
+//     window.addEventListener('devicemotion', motionHandler, false);
+// }

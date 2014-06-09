@@ -12,9 +12,9 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('rotate', data);
   });
 
-  socket.on('devicemove', function(data){
-  	socket.broadcast.emit('move', data);
-  });
+  // socket.on('devicemove', function(data){
+  // 	socket.broadcast.emit('move', data);
+  // });
 });
 
 server.listen(process.env.PORT || 5000, function(){
