@@ -1,9 +1,7 @@
 'use strict';
 
-//matrix are organized  row x col
-
 function createIdentity(){
-	return [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+    return [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
 }
 
 
@@ -12,7 +10,7 @@ function combine(matrix1, matrix2){
         throw 'error: matrices does not have same height';
     }
     var num = 0;
-	return matrix1.map(function(row){ //for every row
+    return matrix1.map(function(row){ //for every row
         return row.concat(matrix2[num++]);
     });
 }
@@ -42,14 +40,3 @@ function matrixPrint(matrix){
     }
 
 }
-
-
-// Testing
-// var matrix1 = [[1, 2, 3], [4, 5, 6]];
-
-// var matrix2 = [[7, 8, 7], [9, 10, 7]];
-
-// var mult = matrixMult(matrix1, matrix2);
-
-// matrixPrint(mult);
-
