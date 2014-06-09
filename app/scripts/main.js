@@ -619,18 +619,19 @@ function interpret(string){
 
         case 'render-parallel':
             var eye = [0, 0, 0];
-            //triangles = theCulling(triangles, 'p', eye);
+
+            var copy = theCulling(triangles, 'p', eye);
 
 
-            for(var i = 0; i < triangles[0].length;i+=3){
-                var x1 = convertScreen(triangles[0][i], 'x');
-                var y1 = -convertScreen(triangles[1][i], 'y');
+            for(var i = 0; i < copy[0].length;i+=3){
+                var x1 = convertScreen(copy[0][i], 'x');
+                var y1 = -convertScreen(copy[1][i], 'y');
 
-                var x2 = convertScreen(triangles[0][i+1], 'x');
-                var y2 = -convertScreen(triangles[1][i+1], 'y');
+                var x2 = convertScreen(copy[0][i+1], 'x');
+                var y2 = -convertScreen(copy[1][i+1], 'y');
 
-                var x3 = convertScreen(triangles[0][i+2], 'x');
-                var y3 = -convertScreen(triangles[1][i+2], 'y');
+                var x3 = convertScreen(copy[0][i+2], 'x');
+                var y3 = -convertScreen(copy[1][i+2], 'y');
    
 
                 context.beginPath();
@@ -648,19 +649,19 @@ function interpret(string){
         case 'render-perspective-cyclops':
             eye = [parseFloat(split[1]), parseFloat(split[2]), parseFloat(split[3])];
 
-            triangles = theCulling(triangles, 'c', eye);
+            var copy = theCulling(triangles, 'c', eye);
             
-            renderCyclops(triangles, eye);
+            renderCyclops(copy, eye);
 
-            for(var i = 0; i < triangles[0].length;i+=3){
-                var x1 = convertScreen(triangles[0][i], 'x');
-                var y1 = -convertScreen(triangles[1][i], 'y');
+            for(var i = 0; i < copy[0].length;i+=3){
+                var x1 = convertScreen(copy[0][i], 'x');
+                var y1 = -convertScreen(copy[1][i], 'y');
 
-                var x2 = convertScreen(triangles[0][i+1], 'x');
-                var y2 = -convertScreen(triangles[1][i+1], 'y');
+                var x2 = convertScreen(copy[0][i+1], 'x');
+                var y2 = -convertScreen(copy[1][i+1], 'y');
 
-                var x3 = convertScreen(triangles[0][i+2], 'x');
-                var y3 = -convertScreen(triangles[1][i+2], 'y');
+                var x3 = convertScreen(copy[0][i+2], 'x');
+                var y3 = -convertScreen(copy[1][i+2], 'y');
    
 
                 context.beginPath();
