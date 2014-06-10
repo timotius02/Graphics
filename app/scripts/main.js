@@ -1,8 +1,8 @@
 'use strict';
 
-
 var canvas = document.getElementById('myCanvas');
 var button = document.getElementById('myButton');
+var sample = document.getElementById('sample');
 var context = canvas.getContext('2d');
 
 var triangles = [[],[],[],[]];
@@ -591,8 +591,13 @@ function grabText(){
         
     }, 20);
 }
+function grabSample(){
+    var text = '# object3d commands test (corrected)\nscreen -3 -2 3 2\npixels 600 400\nrotate-y 40\nrotate-x 20\nsphere-t 1 1 1 0 0 0 1 0 0\nbox-t 1 1 1 0 0 0 -1 -0.5 -1\nrender-parallel';
+    document.getElementById('myTextArea').value = text;
+}
 
 button.addEventListener('click', grabText, false);
+sample.addEventListener('click', grabSample, false);
 
 //socketio
 // create the socket object
@@ -642,7 +647,7 @@ function rotate(data) {
 
     copy = matrixMult(yRotate, copy);
 
-    angle = -data.zRotate;
+    angle = data.zRotate;
     var zRotate = createIdentity();
 
     zRotate[0][0] = Math.cos(angle* Math.PI/180);
@@ -675,7 +680,7 @@ var is_client = document.getElementById('is_client');
 function orientationHandler(data) {
     var dataSet = {
         zRotate: data.gamma,
-        xRotate: data.beta,
+        xRotate: -data.beta,
         yRotate: data.alpha,
     };
     if(is_client.checked) {

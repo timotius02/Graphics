@@ -16,12 +16,12 @@ body {
     margin-top: 5%;
 }
 
-#myButton{
+.button{
     display: block;
     float: right;
     position: relative;
     top: 100px;
-    left:-200px;
+    left:-150px;
     padding: 10px;
 }
 
