@@ -3,7 +3,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-app.use("/", express.static(__dirname + '/app'));
+app.use("/", express.static(__dirname + '/dist'));
 
 io.on('connection', function (socket) {
   // listen for device move
