@@ -207,7 +207,7 @@ function convertScreen(num, c){
 }
 
 function interpretImport(line){
-    var split = line.split('  ');
+    var split = line.split(/\s+/);
     var length = 0;
     var ret = [[],[],[],[]];
 
