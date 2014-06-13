@@ -92,13 +92,13 @@ circle centerx centery centerz radius
 
 ```
 
-**Future Additions**
+**End Result**
+- Finished basic graphics animation up to simple wireframe animations
+- Interface allows for uploading command and import files
+- Import command works
+- Added motion controls through phone controls
+- Added option to cotinue animation infinitely
+- added example button to show quick example
 
-If we finish everything and we have time, we might add some extra features such as:
-
-+ Rotating the animation based on slider or mouse location
-+ Adding shapes using cursor
-+ import animation to gif (If that is possible)
-+ Add Multi-User support so multiple people can access the same canvas
-+ etc
+**Source Code May be Found in App Directory**
 

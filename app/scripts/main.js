@@ -21,6 +21,174 @@ var saves = [];
 
 var continuous = false;
 
+'use strict';
+
+function createIdentity(){
+    return [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+}
+
+
+function combine(matrix1, matrix2){
+    if(matrix1.length !== matrix2.length){
+        throw 'error: matrices does not have same height';
+    }
+    var num = 0;
+    return matrix1.map(function(row){ //for every row
+        return row.concat(matrix2[num++]);
+    });
+}
+
+function matrixMult(matrix1, matrix2) {
+    if(matrix1[0].length!== matrix2.length){//if width != height
+        throw 'error: matrices cannot be multiplied';
+    }
+    var result = [];
+    for (var i = 0; i < matrix1.length; i++) {
+        result[i] = [];
+        for (var j = 0; j < matrix2[0].length; j++) {
+            var sum = 0;
+            for (var k = 0; k < matrix1[0].length; k++) {
+                sum += matrix1[i][k] * matrix2[k][j];
+            }
+            result[i][j] = sum;
+        }
+    }
+    return result;
+}
+
+function matrixPrint(matrix){
+    for(var i = 0; i < matrix.length;i++){
+        var join = matrix[i].join(' ');
+        console.log(join);
+    }
+
+}function uploadCoordinates(form) {
+       var file=form.uploadfile.value;
+       var reader=new FileReader();
+       reader.readAsText(file);
+       form.coordinates.value=reader.result; }
+
+function theCulling(triangles, c, eye){
+    var pointA = [];
+    var pointB = [];
+    var pointC = [];
+
+    var vectorA = [];
+    var vectorB = [];
+    var vectorS = [];
+
+    var perpVector = [];
+
+    var d;
+
+    var ret = [[],[],[],[]];
+
+    if(c==='p'){//p for parallel
+        for(var i = 0;i < triangles[0].length;i+=3){
+            pointA = [triangles[0][i], triangles[1][i], triangles[2][i], triangles[3][i]];
+            pointB = [triangles[0][i+1], triangles[1][i+1], triangles[2][i+1], triangles[3][i+1]];
+            pointC = [triangles[0][i+2], triangles[1][i+2], triangles[2][i+2], triangles[3][i+2]];
+
+            vectorA = [pointA[0]- pointB[0], pointA[1]- pointB[1], pointA[2]- pointB[2]];
+            vectorB = [pointC[0]- pointB[0], pointC[1]- pointB[1], pointC[2]- pointB[2]];
+
+            //finding perp vector
+            perpVector = [(vectorA[1] * vectorB[2]) - (vectorA[2] * vectorB[1]),
+                          (vectorA[2] * vectorB[0]) - (vectorA[0] * vectorB[2]),
+                          (vectorA[0] * vectorB[1]) - (vectorA[1] * vectorB[0])];
+
+            if(perpVector[2]< 0){
+                ret = combine(ret, pointA);
+                ret = combine(ret, pointB);
+                ret = combine(ret, pointC);
+            }
+        }
+    }
+    else{
+        for(var i = 0; i < triangles[0].length;i+=3){
+
+            pointA = [triangles[0][i], triangles[1][i], triangles[2][i], 1];
+            pointB = [triangles[0][i+1], triangles[1][i+1], triangles[2][i+1], 1];
+            pointC = [triangles[0][i+2], triangles[1][i+2], triangles[2][i+2], 1];
+
+            vectorA = [pointB[0]- pointA[0], pointB[1]- pointA[1], pointB[2]- pointA[2]];
+            vectorB = [pointC[0]- pointB[0], pointC[1]- pointB[1], pointC[2]- pointB[2]];
+
+            vectorS = [pointA[0]- eye[0], pointA[1] - eye[1], pointA[2] - eye[2]];
+
+            //perpVector = [(vectorA[1] * vectorB[2]) - (vectorA[2] * vectorB[1]), (vectorA[2] * vectorB[0]) - (vectorA[0] * vectorB[2]), (vectorA[0] * vectorB[1]) - (vectorA[1] * vectorB[0])];
+
+            var temp1 = (vectorA[1]*vectorB[2]) - (vectorA[2]* vectorB[1]);
+            var temp2 = (vectorA[2]*vectorB[0]) - (vectorA[0]* vectorB[2]);
+            var temp3 = (vectorA[0]*vectorB[1]) - (vectorA[1]* vectorB[0]);
+            perpVector = [temp1, temp2, temp3];
+
+            d = (vectorS[0]* perpVector[0]) + (vectorS[1]* perpVector[1]) +(vectorS[2]* perpVector[2]);
+
+            if(d < 0){
+                ret = combine(ret, pointA);
+                ret = combine(ret, pointB);
+                ret = combine(ret, pointC);
+            }
+        }
+
+    }
+
+    return ret;
+}
+
+function renderCyclops(matrix, eye){
+    var x1 = eye[0];
+    var y1 = eye[1];
+    var z1 = eye[2];
+
+    var x, y, z;
+
+    for(var i = 0; i < matrix[0].length;i++){
+        x = matrix[0][i];
+        y = matrix[1][i];
+        z = matrix[2][i];
+
+        matrix[0][i] = x1 - ((z1 * (x1-x)) / (z1-z));
+        matrix[1][i] = y1 - ((z1 * (y1-y)) / (z1-z));
+        matrix[2][i] = 0;
+    }
+}
+
+function renderStereo(matrix, eye1, eye2){
+    var matrix2 = matrix;
+
+    renderCyclops(matrix, eye1);
+    renderCyclops(matrix2, eye2);
+
+    matrix = combine(matrix, matrix2);
+
+}
+
+function drawTriangles(copy, context){
+    for(var i = 0; i < copy[0].length;i+=3){
+        var x1 = convertScreen(copy[0][i], 'x');
+        var y1 = -convertScreen(copy[1][i], 'y');
+
+        var x2 = convertScreen(copy[0][i+1], 'x');
+        var y2 = -convertScreen(copy[1][i+1], 'y');
+
+        var x3 = convertScreen(copy[0][i+2], 'x');
+        var y3 = -convertScreen(copy[1][i+2], 'y');
+
+
+        context.beginPath();
+        context.moveTo(x1, y1);
+        context.lineTo(x2, y2);
+        context.lineTo(x3, y3);
+        context.lineTo(x1, y1);
+
+        context.strokeStyle = '#000000';
+        context.stroke();               
+    }
+
+}
+
 function convertScreen(num, c){
     var result;
 
@@ -37,6 +205,55 @@ function convertScreen(num, c){
     }
     return result;
 }
+
+function interpretImport(line){
+    var split = line.split(' ');
+    var length = 0;
+    var ret = [[],[],[],[]];
+
+    switch(split[0]){
+        case "":
+        if(curFrame===1){
+            console.log(split.length);
+            console.log(line);
+        }
+        break;
+        case "#":
+        break;
+
+        default:
+        if(split.length ===1){
+            length = parseInt(split[0]);
+        }
+        else{
+            // if(split[0]==='' && split.length ===1)
+            //     break;
+            // else if(split[0]==='')
+            //     split.splice(0,1);
+
+            var point1 = [parseFloat(split[0]), parseFloat(split[1]), parseFloat(split[2]), 1];
+            var point2 = [parseFloat(split[3]), parseFloat(split[4]), parseFloat(split[5]), 1];
+            var point3 = [parseFloat(split[6]), parseFloat(split[7]), parseFloat(split[8]), 1];
+
+            ret = combine(ret, point1);
+            ret = combine(ret, point2);
+            ret = combine(ret, point3);
+        }
+    }
+    return ret;
+}
+
+function importFiles(lines, i, k){
+    var importsTriangles = [[],[],[],[]];
+
+    for(var c =i; c < k; c++){
+        var ret = interpretImport(lines[c]);//returns one triangle face
+        importsTriangles = combine(importsTriangles, ret);
+    }
+
+    return importsTriangles;
+}
+
 
 function interpret(string){
     var stringCopy = string;
@@ -125,6 +342,83 @@ function interpret(string){
         break;
 
         case 'import': //does not do anything yet
+            var imports = document.getElementById('imports').value;
+            var lines = imports.split('\n');
+            var importTriangles;
+
+            for(var c = 2; c < split.length; c++){
+                var temp = parseFloat(split[c]);
+
+                if(isNaN(temp)){
+
+                    for (var i = 0; i < variables.length;i++){
+                        if(variables[i].name === split[c] && curFrame >= variables[i].startFrame && curFrame <= variables[i].endFrame){
+                            split[c] = variables[i].currVal.toString();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for(var i = 0; i < lines.length;i++){
+                if(lines[i].charAt(0)==='n'){
+                    var concat = lines[i].split(' ');
+                    if(concat[1] === split[1]){//find right import
+                        for(var k =i ; k < lines.length;k++){
+                            if(lines[k].charAt(0)==='e'){
+                                importTriangles = importFiles(lines, i+1, k);
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            // if(curFrame===1)
+            // console.log(importTriangles);
+        //local transformations
+        var scale = createIdentity();
+        scale[0][0] = parseFloat(split[2]);
+        scale[1][1] = parseFloat(split[3]);
+        scale[2][2] = parseFloat(split[4]);
+        importTriangles = matrixMult(scale, importTriangles);
+
+        var rotateX = createIdentity();
+        var angle = parseFloat(split[5]);
+        rotateX[1][1] = Math.cos(angle* Math.PI/180);
+        rotateX[1][2] = -Math.sin(angle* Math.PI/180);
+        rotateX[2][1] = Math.sin(angle* Math.PI/180);
+        rotateX[2][2] = Math.cos(angle* Math.PI/180);
+        importTriangles = matrixMult(rotateX, importTriangles);
+
+        var rotateY = createIdentity();
+        angle = parseFloat(split[6]);
+        rotateY[0][0] = Math.cos(angle* Math.PI/180);
+        rotateY[0][2] = Math.sin(angle* Math.PI/180);
+        rotateY[2][0] = -Math.sin(angle* Math.PI/180);
+        rotateY[2][2] = Math.cos(angle* Math.PI/180);
+        importTriangles = matrixMult(rotateY, importTriangles);
+
+
+        var rotateZ = createIdentity();
+        angle = parseFloat(split[7]);
+        rotateZ[0][0] = Math.cos(angle* Math.PI/180);
+        rotateZ[0][1] = -Math.sin(angle* Math.PI/180);
+        rotateZ[1][0] = Math.sin(angle* Math.PI/180);
+        rotateZ[1][1] = Math.cos(angle* Math.PI/180);
+        importTriangles = matrixMult(rotateZ, importTriangles);
+
+        var move = createIdentity();
+        move[0][3] = parseFloat(split[8]);
+        move[1][3] = parseFloat(split[9]);
+        move[2][3] = parseFloat(split[10]);
+        importTriangles = matrixMult(move, importTriangles);
+
+        //applying world transformation
+
+        importTriangles = matrixMult(transformation, importTriangles);
+
+        triangles = combine(triangles, importTriangles);
+
         break;
 
         case 'rotate-x':
@@ -198,10 +492,10 @@ function interpret(string){
         var translate = createIdentity();
         for(var c = 1; c < split.length; c++){
             var temp = parseFloat(split[c]);
-            if(isNaN(angle)){
+            if(isNaN(temp)){
                 for (var i = 0; i < variables.length;i++){
                     if(variables[i].name === split[1] && curFrame >= variables[i].startFrame && curFrame <= variables[i].endFrame){
-                        angle = variables[i].currVal;
+                        split[c] = variables[i].currVal.toString();
                         break;
                     }
                 }
@@ -212,6 +506,7 @@ function interpret(string){
         translate[1][3] = parseFloat(split[2]);
         translate[2][3] = parseFloat(split[3]);
 
+
         transformation = matrixMult(transformation, translate);
         break;
 
@@ -220,10 +515,10 @@ function interpret(string){
 
         for(var c = 1; c < split.length; c++){
             var temp = parseFloat(split[c]);
-            if(isNaN(angle)){
+            if(isNaN(temp)){
                 for (var i = 0; i < variables.length;i++){
                     if(variables[i].name === split[1] && curFrame >= variables[i].startFrame && curFrame <= variables[i].endFrame){
-                        angle = variables[i].currVal;
+                        split[c] = variables[i].currVal.toString();
                         break;
                     }
                 }
@@ -240,17 +535,19 @@ function interpret(string){
         case 'box-t':
         var box = [[],[],[],[]];
 
-        for(var c = 1; c < split.length; c++){
-            var temp = parseFloat(split[c]);
-            if(isNaN(angle)){
-                for (var i = 0; i < variables.length;i++){
-                    if(variables[i].name === split[1] && curFrame >= variables[i].startFrame && curFrame <= variables[i].endFrame){
-                        angle = variables[i].currVal;
-                        break;
+            for(var c = 1; c < split.length; c++){
+                var temp = parseFloat(split[c]);
+
+                if(isNaN(temp)){
+
+                    for (var i = 0; i < variables.length;i++){
+                        if(variables[i].name === split[c] && curFrame >= variables[i].startFrame && curFrame <= variables[i].endFrame){
+                            split[c] = variables[i].currVal.toString();
+                            break;
+                        }
                     }
                 }
             }
-        }
 
 
         var pointA = [-0.5, -0.5, 0.5, 1]; //front vertices
@@ -367,17 +664,19 @@ function interpret(string){
 
         var point = [0, 0, 0, 1];
 
-        for(var c = 1; c < split.length; c++){//find variable
-            var temp = parseFloat(split[c]);
-            if(isNaN(angle)){
-                for (var i = 0; i < variables.length;i++){
-                    if(variables[i].name === split[1] && curFrame >= variables[i].startFrame && curFrame <= variables[i].endFrame){
-                        angle = variables[i].currVal;
-                        break;
+            for(var c = 1; c < split.length; c++){
+                var temp = parseFloat(split[c]);
+
+                if(isNaN(temp)){
+
+                    for (var i = 0; i < variables.length;i++){
+                        if(variables[i].name === split[c] && curFrame >= variables[i].startFrame && curFrame <= variables[i].endFrame){
+                            split[c] = variables[i].currVal.toString();
+                            break;
+                        }
                     }
                 }
             }
-        }
 
 
         for(var theta = 0; theta < 360;){
@@ -589,7 +888,7 @@ function grabText(){
                 clearInterval(id);
         }
         
-    }, 20);
+    }, 33);
 }
 function grabSample(){
     var text = '# object3d commands test (corrected)\nscreen -3 -2 3 2\npixels 600 400\nrotate-y 40\nrotate-x 20\nsphere-t 1 1 1 0 0 0 1 0 0\nbox-t 1 1 1 0 0 0 -1 -0.5 -1\nrender-parallel';
@@ -707,3 +1006,62 @@ if(window.DeviceOrientationEvent) {
 // if(window.DeviceMotionEvent){
 //     window.addEventListener('devicemotion', motionHandler, false);
 // }
+
+
+window.onload = function() {
+
+    //Check File API support
+    if (window.File && window.FileList && window.FileReader) {
+        var filesInput = document.getElementById('files');
+
+        filesInput.addEventListener('change', function(event) {
+
+            var files = event.target.files; //FileList object
+            var output = document.getElementById('result');
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+
+                var picReader = new FileReader();
+
+                picReader.addEventListener("load", function(event) {
+                    //var textFile = event.target;
+                    document.getElementById('myTextArea').value = event.target.result;
+                });
+
+                //Read the text file
+                picReader.readAsText(file);
+            }
+        });
+
+        var importFiles= document.getElementById('importFiles');
+
+        importFiles.addEventListener('change', function(event) {
+
+            var files = event.target.files; //FileList object
+            var output = document.getElementById('result');
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+
+                var picReader = new FileReader();
+
+                picReader.addEventListener("load", function(event) {
+                    //var textFile = event.target;
+                    document.getElementById('imports').value += "\nname " + file.name+"\n";
+                    document.getElementById('imports').value += event.target.result;
+                    document.getElementById('imports').value += "end\n";
+
+
+                });
+
+                //Read the text file
+                picReader.readAsText(file);
+            }
+        });
+
+    }
+    else {
+        console.log("Your browser does not support File API");
+    }
+}
