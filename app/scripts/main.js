@@ -895,8 +895,13 @@ function grabSample(){
     document.getElementById('myTextArea').value = text;
 }
 
+function grabSample2(){
+    var text = '# object3d commands test with frames, variables, save/restore\nframes 1 100\n# the variables:\nvary finger1 0 30 1 50\nvary finger1 30 0 51 100\nvary finger2 0 45 1 50\nvary finger2 45 0 51 100\nvary finger3 0 60 1 50\nvary finger3 60 0 51 100\nvary turn 0 360 1 100\nscreen -2 -2 2 2\npixels 400 400\nrotate-y turn\nmove 0 -0.5 0\nscale .75 .75 .75\nrotate-x 30\n# draw the palm\n#box-t 2.4 1.6 .75 0 0 0 0 0 0\nsphere-t 1.2 1 0.37 0 0 0 0 0 0\n# save the palms coordinate system\nsave palm\n#move to and draw first finger\nmove 0.8 1 0\nrotate-x finger1\nbox-t 0.2 1 0.2 0 0 0 0 0.7 0\n# move to and draw first post-finger\nmove 0 1.2 0\nrotate-x finger1\nbox-t 0.15 0.5 0.2 0 0 0 0 0.3 0\n# go back to palms coordinate system\nrestore palm\n# second finger\nmove 0 1 0\nrotate-x finger2\nbox-t 0.2 1 0.2 0 0 0 0 0.7 0\n# move to and draw second post-finger\nmove 0 1.2 0\nrotate-x finger2\nbox-t 0.15 0.5 0.2 0 0 0 0 0.3 0\n# third finger\nrestore palm\nmove -0.8 1 0\nrotate-x finger3\nbox-t 0.2 1 0.2 0 0 0 0 0.7 0\n# move to and draw third post-finger\nmove 0 1.2 0\nrotate-x finger3\nbox-t 0.15 0.5 0.2 0 0 0 0 0.3 0\nrender-parallel\nfiles anim_save_\n#display 0.02\nend';
+    document.getElementById('myTextArea').value = text;
+}
+
 button.addEventListener('click', grabText, false);
-sample.addEventListener('click', grabSample, false);
+sample.addEventListener('click', grabSample2, false);
 
 //socketio
 // create the socket object
