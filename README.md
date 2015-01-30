@@ -3,6 +3,9 @@
 ### A Computer Graphics Final Project
 ### By Timotius Sitorus & Kevin Sun
 
+####Demo: http://graphics3d.herokuapp.com/
+To run demo click "Example" and then "Convert"
+
 **Introduction**
 
 Our project's goal is to migrate the command list program that 
@@ -99,6 +102,4 @@ circle centerx centery centerz radius
 - Added motion controls through phone controls
 - Added option to cotinue animation infinitely
 - added example button to show quick example
-
-**Source Code May be Found in App Directory**
 
