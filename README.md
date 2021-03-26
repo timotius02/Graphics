@@ -3,7 +3,7 @@
 ### A Computer Graphics Final Project
 ### By Timotius Sitorus & Kevin Sun
 
-####Demo: http://graphics3d.herokuapp.com/
+#### Demo: http://graphics3d.herokuapp.com/
 To run demo click "Example" and then "Convert"
 
 **Introduction**
